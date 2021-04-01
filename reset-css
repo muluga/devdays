@@ -1,0 +1,37 @@
+Install
+With curl:
+
+$ curl -LO "https://unpkg.com/reset-css/reset.css"
+$ curl -LO "https://unpkg.com/reset-css/less/reset.less"
+$ curl -LO "https://unpkg.com/reset-css/sass/_reset.scss"
+
+With NPM:
+
+$ npm install reset-css
+With Yarn:
+
+$ yarn add reset-css
+With Bower:
+
+$ bower install reset-css
+
+
+Usage
+HTML:
+
+<link rel="stylesheet" href="/path/to/reset-css/reset.css" />
+CSS:
+
+@import '/path/to/reset-css/reset.css';
+Via PostCSS and postcss-import:
+
+@import 'reset-css';
+Via webpack and css-loader:
+
+import 'reset-css';
+Via Less:
+
+@import '/path/to/reset-css/less/reset';
+Via Sass:
+
+@import '/path/to/reset-css/sass/reset';
