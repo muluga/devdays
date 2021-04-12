@@ -1,0 +1,13 @@
+Ubuntu awslogs install 
+
+#curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O
+#sudo python ./awslogs-agent-setup.py --region us-east-1
+
+#sudo python3 ./awslogs-agent-setup.py --region us-east-1
+
+#curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O
+#curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/AgentDependencies.tar.gz -O
+#tar xvf AgentDependencies.tar.gz -C /tmp/
+#sudo python ./awslogs-agent-setup.py --region us-east-1 --dependency-path /tmp/AgentDependencies
+
+CloudWatch Logs 리전을 지정하여 us-east-1, us-west-1, us-west-2, ap-south-1, ap-northeast-2, ap-southeast-1, ap-southeast-2, ap-northeast-1, eu-central-1, eu-west-1, or sa-east-1 에이전트를 설치할 수 있습니다. 
