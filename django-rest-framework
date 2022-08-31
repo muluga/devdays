@@ -1,0 +1,76 @@
+Django REST framework TokenAuthentication
+
+
+TokenAuthentication의 작동 방식
+각 사용자마다 Token이라는 문자열을 갖습니다.
+로그인 엔드포인트가 두드리면 userID와 password를 인증하여 Token을 반환합니다.
+다음 번 이후 프런트 엔드는 Header에 Token 정보를 갖고 엔드 포인트를 두드린다
+.
+
+비슷한 것에 JWT 인증이 있다. JWT 인증과 달리 Token은 DB에 직접 저장되어 있어 매번 참조하여 인증을 한다.
+
+코드
+authtoken 추가
+
+settings.py
+ INSTALLED_APPS = [
+     ...
+     'rest_framework.authtoken'
+ ]
+Authentication_Classes를 정의한다.
+
+settings.py
+ REST_FRAMEWORK = {
+     'DEFAULT_AUTHENTICATION_CLASSES': [
+         'rest_framework.authentication.BasicAuthentication',
+         'rest_framework.authentication.SessionAuthentication',
+     ]
+ }
+사용자의 post_save 신호를 잡아 Token을 추가하는
+models.py에 추가합니다.
+
+models.py
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+]
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+로그인시의 Token 발행 View는 디폴트의 것을 사용할 수 있다.
+obtain_auth_token은 username과 password를 수신하고 { 'token' : '9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' }
+응답으로 반환합니다.
+
+urls.py
+from rest_framework.authtoken import views
+urlpatterns += [
+    path('api-token-auth/', views.obtain_auth_token)
+]
+사용자 정의 할 수 있습니다.
+
+auth.py
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
+사용자 정의하면 urls.py는 다음과 같습니다.
+
+urls.py
+urlpatterns += [
+    path('api-token-auth/', CustomAuthToken.as_view())
+]
